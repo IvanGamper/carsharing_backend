@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Sharing App</title>
+    <script>
+        async function loadCars() {
+            const response = await fetch('/cars');
+            const cars = await response.json();
+            const carList = document.getElementById('car-list');
+            carList.innerHTML = cars.map(car =>
+                `<li>${car.brand} ${car.model} - Available: ${car.available}</li>`
+            ).join('');
+        }
+
+        async function rentCar() {
+            const carId = document.getElementById('car-id').value;
+            const response = await fetch('/rent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: parseInt(carId) })
+            });
+            const result = await response.json();
+            alert(result.message);
+            loadCars();
+        }
+    </script>
+</head>
+<body onload="loadCars()">
+    <h1>Car Sharing App</h1>
+    <ul id="car-list"></ul>
+    <input type="number" id="car-id" placeholder="Car ID" />
+    <button onclick="rentCar()">Rent Car</button>
+</body>
+</html>
